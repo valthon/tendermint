@@ -25,6 +25,10 @@
 
 
 [[constraint]]
+  name = "github.com/aws/aws-sdk-go"
+  version = "=v1.15.45"
+
+[[constraint]]
   name = "github.com/go-kit/kit"
   version = "=0.6.0"
 

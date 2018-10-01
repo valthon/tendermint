@@ -16,6 +16,7 @@ const (
 	GoLevelDBBackend DBBackendType = "goleveldb"
 	MemDBBackend     DBBackendType = "memdb"
 	FSDBBackend      DBBackendType = "fsdb" // using the filesystem naively
+	S3DBBackend      DBBackendType = "s3db" // Only use for write-once datasets, not as default for node
 )
 
 type dbCreator func(name string, dir string) (DB, error)
