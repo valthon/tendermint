@@ -144,6 +144,9 @@ type BaseConfig struct {
 	// If true, query the ABCI app on connecting to a new peer
 	// so the app can decide if we should keep the connection or not
 	FilterPeers bool `mapstructure:"filter_peers"` // false
+
+	// If set, use s3 bucket for blockstore db
+	S3Bucket string `mapstructure:"s3_bucket"`
 }
 
 // DefaultBaseConfig returns a default base configuration for a Tendermint node
@@ -161,6 +164,7 @@ func DefaultBaseConfig() BaseConfig {
 		FilterPeers:       false,
 		DBBackend:         "leveldb",
 		DBPath:            "data",
+		S3Bucket:          "",
 	}
 }
 

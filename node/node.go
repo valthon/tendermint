@@ -57,7 +57,11 @@ type DBProvider func(*DBContext) (dbm.DB, error)
 // DefaultDBProvider returns a database using the DBBackend and DBDir
 // specified in the ctx.Config.
 func DefaultDBProvider(ctx *DBContext) (dbm.DB, error) {
-	dbType := dbm.DBBackendType(ctx.Config.DBBackend)
+	dbType := dbm.BBackendType(ctx.Config.DBBackend)
+	// override db backend for blockstore if we have an s3 bucket configured
+	if ctx.ID == "blockstore" && len(ctx.Config.S3Bucket) > 0 {
+		dbType = dbm.S3DBBackend
+	}
 	return dbm.NewDB(ctx.ID, dbType, ctx.Config.DBDir()), nil
 }
 
