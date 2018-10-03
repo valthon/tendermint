@@ -145,6 +145,9 @@ type BaseConfig struct {
 
 	// Database directory
 	DBPath string `mapstructure:"db_dir"`
+
+	// If set, use s3 bucket for blockstore db
+	S3Bucket string `mapstructure:"s3_bucket"`
 }
 
 // DefaultBaseConfig returns a default base configuration for a Tendermint node
@@ -162,6 +165,7 @@ func DefaultBaseConfig() BaseConfig {
 		FilterPeers:       false,
 		DBBackend:         "leveldb",
 		DBPath:            "data",
+		S3Bucket:          "",
 	}
 }
 

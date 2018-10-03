@@ -33,6 +33,9 @@ fast_sync = true
 # Database backend: leveldb | memdb
 db_backend = "leveldb"
 
+# Name of S3 bucket to use for blockstore (empty = store in default db_backend)
+s3_bucket = ""
+
 # Database directory
 db_path = "data"
 

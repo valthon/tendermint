@@ -80,6 +80,9 @@ fast_sync = {{ .BaseConfig.FastSync }}
 # Database backend: leveldb | memdb
 db_backend = "{{ .BaseConfig.DBBackend }}"
 
+# Name of S3 bucket to use for blockstore (empty = store in default db_backend)
+s3_bucket = "{{ .BaseConfig.S3Bucket }}"
+
 # Database directory
 db_path = "{{ js .BaseConfig.DBPath }}"
 
