@@ -14,12 +14,13 @@ import (
 	"time"
 )
 
-func init() {
-	dbCreator := func(name string, dir string) (DB, error) {
-		return NewS3DB(name, dir)
-	}
-	registerDBCreator(S3DBBackend, dbCreator, true)
-}
+// Not registering in favor of registering CachedS3DB as the S3DB backend
+//func init() {
+//	dbCreator := func(name string, dir string) (DB, error) {
+//		return NewS3DB(name, dir)
+//	}
+//	registerDBCreator(S3DBBackend, dbCreator, true)
+//}
 
 var _ DB = (*S3DB)(nil)
 
