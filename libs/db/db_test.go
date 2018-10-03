@@ -10,7 +10,7 @@ import (
 
 func TestDBIteratorSingleKey(t *testing.T) {
 	for backend := range backends {
-		if backend == S3DBBackend {
+		if backend == S3DBBackend || backend == SelectiveS3DBBackend {
 			continue
 		}
 		t.Run(fmt.Sprintf("Backend %s", backend), func(t *testing.T) {
@@ -33,7 +33,7 @@ func TestDBIteratorSingleKey(t *testing.T) {
 
 func TestDBIteratorTwoKeys(t *testing.T) {
 	for backend := range backends {
-		if backend == S3DBBackend {
+		if backend == S3DBBackend || backend == SelectiveS3DBBackend {
 			continue
 		}
 		t.Run(fmt.Sprintf("Backend %s", backend), func(t *testing.T) {
@@ -64,7 +64,7 @@ func TestDBIteratorTwoKeys(t *testing.T) {
 
 func TestDBIteratorMany(t *testing.T) {
 	for backend := range backends {
-		if backend == S3DBBackend {
+		if backend == S3DBBackend || backend == SelectiveS3DBBackend {
 			continue
 		}
 		t.Run(fmt.Sprintf("Backend %s", backend), func(t *testing.T) {
@@ -92,7 +92,7 @@ func TestDBIteratorMany(t *testing.T) {
 
 func TestDBIteratorEmpty(t *testing.T) {
 	for backend := range backends {
-		if backend == S3DBBackend {
+		if backend == S3DBBackend || backend == SelectiveS3DBBackend {
 			continue
 		}
 		t.Run(fmt.Sprintf("Backend %s", backend), func(t *testing.T) {
@@ -108,7 +108,7 @@ func TestDBIteratorEmpty(t *testing.T) {
 
 func TestDBIteratorEmptyBeginAfter(t *testing.T) {
 	for backend := range backends {
-		if backend == S3DBBackend {
+		if backend == S3DBBackend || backend == SelectiveS3DBBackend {
 			continue
 		}
 		t.Run(fmt.Sprintf("Backend %s", backend), func(t *testing.T) {
@@ -124,7 +124,7 @@ func TestDBIteratorEmptyBeginAfter(t *testing.T) {
 
 func TestDBIteratorNonemptyBeginAfter(t *testing.T) {
 	for backend := range backends {
-		if backend == S3DBBackend {
+		if backend == S3DBBackend || backend == SelectiveS3DBBackend {
 			continue
 		}
 		t.Run(fmt.Sprintf("Backend %s", backend), func(t *testing.T) {

@@ -53,7 +53,7 @@ func testBackendGetSetDelete(t *testing.T, backend DBBackendType) {
 
 func TestBackendsGetSetDelete(t *testing.T) {
 	for dbType := range backends {
-		if dbType == S3DBBackend {
+		if dbType == S3DBBackend || dbType == SelectiveS3DBBackend {
 			continue
 		}
 		testBackendGetSetDelete(t, dbType)
@@ -61,7 +61,7 @@ func TestBackendsGetSetDelete(t *testing.T) {
 }
 
 func withDB(t *testing.T, dbType DBBackendType, fn func(DB)) {
-	if dbType == S3DBBackend {
+	if dbType == S3DBBackend || dbType == SelectiveS3DBBackend {
 		return
 	}
 	creator := backends[dbType]
@@ -165,7 +165,7 @@ func TestGoLevelDBBackend(t *testing.T) {
 
 func TestDBIterator(t *testing.T) {
 	for dbType := range backends {
-		if dbType == S3DBBackend {
+		if dbType == S3DBBackend || dbType == SelectiveS3DBBackend {
 			continue
 		}
 		t.Run(fmt.Sprintf("%v", dbType), func(t *testing.T) {
