@@ -58,7 +58,12 @@ type DBProvider func(*DBContext) (dbm.DB, error)
 // specified in the ctx.Config.
 func DefaultDBProvider(ctx *DBContext) (dbm.DB, error) {
 	dbType := dbm.DBBackendType(ctx.Config.DBBackend)
-	return dbm.NewDB(ctx.ID, dbType, ctx.Config.DBDir()), nil
+	// override db backend for blockstore if we have an s3 bucket configured
+	dbDir := ctx.Config.DBDir()
+	if len(ctx.Config.S3Bucket) > 0 {
+		return dbm.NewDBWithS3Bucket(ctx.ID, dbType, dbDir, ctx.Config.S3Bucket), nil
+	}
+	return dbm.NewDB(ctx.ID, dbType, dbDir), nil
 }
 
 // GenesisDocProvider returns a GenesisDoc.

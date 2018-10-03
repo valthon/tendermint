@@ -17,6 +17,8 @@ func AddNodeFlags(cmd *cobra.Command) {
 	// bind flags
 	cmd.Flags().String("moniker", config.Moniker, "Node Name")
 
+	cmd.Flags().String("s3_bucket", config.S3Bucket, "Store blockchain in named s3 bucket instead of locally")
+
 	// priv val flags
 	cmd.Flags().String("priv_validator_laddr", config.PrivValidatorListenAddr, "Socket address to listen on for connections from external priv_validator process")
 
