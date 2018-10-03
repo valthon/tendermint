@@ -9,6 +9,9 @@ import (
 // Empty iterator for empty db.
 func TestPrefixIteratorNoMatchNil(t *testing.T) {
 	for backend := range backends {
+		if backend == S3DBBackend {
+			continue
+		}
 		t.Run(fmt.Sprintf("Prefix w/ backend %s", backend), func(t *testing.T) {
 			db, dir := newTempDB(t, backend)
 			defer os.RemoveAll(dir)
@@ -22,6 +25,9 @@ func TestPrefixIteratorNoMatchNil(t *testing.T) {
 // Empty iterator for db populated after iterator created.
 func TestPrefixIteratorNoMatch1(t *testing.T) {
 	for backend := range backends {
+		if backend == S3DBBackend {
+			continue
+		}
 		t.Run(fmt.Sprintf("Prefix w/ backend %s", backend), func(t *testing.T) {
 			db, dir := newTempDB(t, backend)
 			defer os.RemoveAll(dir)
@@ -36,6 +42,9 @@ func TestPrefixIteratorNoMatch1(t *testing.T) {
 // Empty iterator for prefix starting after db entry.
 func TestPrefixIteratorNoMatch2(t *testing.T) {
 	for backend := range backends {
+		if backend == S3DBBackend {
+			continue
+		}
 		t.Run(fmt.Sprintf("Prefix w/ backend %s", backend), func(t *testing.T) {
 			db, dir := newTempDB(t, backend)
 			defer os.RemoveAll(dir)
@@ -50,6 +59,9 @@ func TestPrefixIteratorNoMatch2(t *testing.T) {
 // Iterator with single val for db with single val, starting from that val.
 func TestPrefixIteratorMatch1(t *testing.T) {
 	for backend := range backends {
+		if backend == S3DBBackend {
+			continue
+		}
 		t.Run(fmt.Sprintf("Prefix w/ backend %s", backend), func(t *testing.T) {
 			db, dir := newTempDB(t, backend)
 			defer os.RemoveAll(dir)
@@ -69,6 +81,9 @@ func TestPrefixIteratorMatch1(t *testing.T) {
 // Iterator with prefix iterates over everything with same prefix.
 func TestPrefixIteratorMatches1N(t *testing.T) {
 	for backend := range backends {
+		if backend == S3DBBackend {
+			continue
+		}
 		t.Run(fmt.Sprintf("Prefix w/ backend %s", backend), func(t *testing.T) {
 			db, dir := newTempDB(t, backend)
 			defer os.RemoveAll(dir)

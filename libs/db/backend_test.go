@@ -53,11 +53,18 @@ func testBackendGetSetDelete(t *testing.T, backend DBBackendType) {
 
 func TestBackendsGetSetDelete(t *testing.T) {
 	for dbType := range backends {
+		if dbType == S3DBBackend {
+			continue
+		}
 		testBackendGetSetDelete(t, dbType)
 	}
 }
 
-func withDB(t *testing.T, creator dbCreator, fn func(DB)) {
+func withDB(t *testing.T, dbType DBBackendType, fn func(DB)) {
+	if dbType == S3DBBackend {
+		return
+	}
+	creator := backends[dbType]
 	name := fmt.Sprintf("test_%x", cmn.RandStr(12))
 	dir := os.TempDir()
 	db, err := creator(name, dir)
@@ -70,8 +77,8 @@ func withDB(t *testing.T, creator dbCreator, fn func(DB)) {
 func TestBackendsNilKeys(t *testing.T) {
 
 	// Test all backends.
-	for dbType, creator := range backends {
-		withDB(t, creator, func(db DB) {
+	for dbType, _ := range backends {
+		withDB(t, dbType, func(db DB) {
 			t.Run(fmt.Sprintf("Testing %s", dbType), func(t *testing.T) {
 
 				// Nil keys are treated as the empty key for most operations.
@@ -158,6 +165,9 @@ func TestGoLevelDBBackend(t *testing.T) {
 
 func TestDBIterator(t *testing.T) {
 	for dbType := range backends {
+		if dbType == S3DBBackend {
+			continue
+		}
 		t.Run(fmt.Sprintf("%v", dbType), func(t *testing.T) {
 			testDBIterator(t, dbType)
 		})
