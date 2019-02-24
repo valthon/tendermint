@@ -439,7 +439,7 @@ func newSignerValidatorEndpoint(logger log.Logger, addr string, timeoutReadWrite
 		listener = tcpLn
 	}
 
-	return NewSignerValidatorEndpoint(logger, listener)
+	return NewSignerValidatorEndpoint(nil, logger, listener)
 }
 
 func testSetupSocketPair(

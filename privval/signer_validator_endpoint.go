@@ -37,6 +37,7 @@ type SignerValidatorEndpoint struct {
 	cmn.BaseService
 
 	listener net.Listener
+	localValidator types.PrivValidator
 
 	// ping
 	cancelPingCh    chan struct{}
@@ -58,8 +59,9 @@ type SignerValidatorEndpoint struct {
 var _ types.PrivValidator = (*SignerValidatorEndpoint)(nil)
 
 // NewSignerValidatorEndpoint returns an instance of SignerValidatorEndpoint.
-func NewSignerValidatorEndpoint(logger log.Logger, listener net.Listener) *SignerValidatorEndpoint {
+func NewSignerValidatorEndpoint(localValidator types.PrivValidator, logger log.Logger, listener net.Listener) *SignerValidatorEndpoint {
 	sc := &SignerValidatorEndpoint{
+		localValidator:  localValidator,
 		listener:        listener,
 		heartbeatPeriod: heartbeatPeriod,
 	}
@@ -83,6 +85,15 @@ func (ve *SignerValidatorEndpoint) GetPubKey() crypto.PubKey {
 func (ve *SignerValidatorEndpoint) SignVote(chainID string, vote *types.Vote) error {
 	ve.mtx.Lock()
 	defer ve.mtx.Unlock()
+	// Sign first w/ FilePV, then override signature with our remote signer
+	// Signing first w/ FilePV allows us to take advantage of the state management
+	// and double-sign protection from FilePV
+	if ve.localValidator != nil {
+		localError := ve.localValidator.SignVote(chainID, vote) // Fake sign w/ FilePV first, to ensure no double-sign
+		if localError != nil {
+			return localError
+		}
+	}
 	return ve.signer.SignVote(chainID, vote)
 }
 
@@ -90,6 +101,15 @@ func (ve *SignerValidatorEndpoint) SignVote(chainID string, vote *types.Vote) er
 func (ve *SignerValidatorEndpoint) SignProposal(chainID string, proposal *types.Proposal) error {
 	ve.mtx.Lock()
 	defer ve.mtx.Unlock()
+	// Sign first w/ FilePV, then override signature with our remote signer
+	// Signing first w/ FilePV allows us to take advantage of the state management
+	// and double-sign protection from FilePV
+	if ve.localValidator != nil {
+		localError := ve.localValidator.SignProposal(chainID, proposal) // Fake sign w/ FilePV first, to ensure no double-sign
+		if localError != nil {
+			return localError
+		}
+	}
 	return ve.signer.SignProposal(chainID, proposal)
 }
 

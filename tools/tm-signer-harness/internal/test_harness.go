@@ -347,7 +347,7 @@ func newTestHarnessSocketVal(logger log.Logger, cfg TestHarnessConfig) (*privval
 		logger.Error("Unsupported protocol (must be unix:// or tcp://)", "proto", proto)
 		return nil, newTestHarnessError(ErrInvalidParameters, nil, fmt.Sprintf("Unsupported protocol: %s", proto))
 	}
-	return privval.NewSignerValidatorEndpoint(logger, svln), nil
+	return privval.NewSignerValidatorEndpoint(nil, logger, svln), nil
 }
 
 func newTestHarnessError(code int, err error, info string) *TestHarnessError {
