@@ -395,7 +395,7 @@ func newSocketVal(logger log.Logger, addr string, connDeadline time.Duration) *S
 		TCPListenerConnDeadline(connDeadline)(tcpLn)
 		svln = tcpLn
 	}
-	return NewSocketVal(logger, svln)
+	return NewSocketVal(nil, logger, svln)
 }
 
 func testSetupSocketPair(

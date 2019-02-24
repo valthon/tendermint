@@ -42,7 +42,8 @@ func SocketValHeartbeat(period time.Duration) SocketValOption {
 type SocketVal struct {
 	cmn.BaseService
 
-	listener net.Listener
+	listener       net.Listener
+	localValidator types.PrivValidator
 
 	// ping
 	cancelPing    chan struct{}
@@ -66,12 +67,14 @@ var _ types.PrivValidator = (*SocketVal)(nil)
 
 // NewSocketVal returns an instance of SocketVal.
 func NewSocketVal(
+	localValidator types.PrivValidator,
 	logger log.Logger,
 	listener net.Listener,
 ) *SocketVal {
 	sc := &SocketVal{
-		listener:      listener,
-		connHeartbeat: connHeartbeat,
+		localValidator: localValidator,
+		listener:       listener,
+		connHeartbeat:  connHeartbeat,
 	}
 
 	sc.BaseService = *cmn.NewBaseService(logger, "SocketVal", sc)
@@ -93,6 +96,15 @@ func (sc *SocketVal) GetPubKey() crypto.PubKey {
 func (sc *SocketVal) SignVote(chainID string, vote *types.Vote) error {
 	sc.mtx.Lock()
 	defer sc.mtx.Unlock()
+	// Sign first w/ FilePV, then override signature with our remote signer
+	// Signing first w/ FilePV allows us to take advantage of the state management
+	// and double-sign protection from FilePV
+	if sc.localValidator != nil {
+		localError := sc.localValidator.SignVote(chainID, vote) // Fake sign w/ FilePV first, to ensure no double-sign
+		if localError != nil {
+			return localError
+		}
+	}
 	return sc.signer.SignVote(chainID, vote)
 }
 
@@ -100,6 +112,15 @@ func (sc *SocketVal) SignVote(chainID string, vote *types.Vote) error {
 func (sc *SocketVal) SignProposal(chainID string, proposal *types.Proposal) error {
 	sc.mtx.Lock()
 	defer sc.mtx.Unlock()
+	// Sign first w/ FilePV, then override signature with our remote signer
+	// Signing first w/ FilePV allows us to take advantage of the state management
+	// and double-sign protection from FilePV
+	if sc.localValidator != nil {
+		localError := sc.localValidator.SignProposal(chainID, proposal) // Fake sign w/ FilePV first, to ensure no double-sign
+		if localError != nil {
+			return localError
+		}
+	}
 	return sc.signer.SignProposal(chainID, proposal)
 }
 
